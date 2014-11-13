@@ -1,6 +1,6 @@
 (ns ru.prepor.utils
   (:require [clojure.core.async :as async]
-            [taoensso.timbre :as log]))
+            [clojure.tools.logging :as log]))
 
 (defn throwable?
   [v]
