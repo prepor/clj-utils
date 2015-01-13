@@ -50,14 +50,14 @@
   [ch-or-res]
   `(let [res# ~ch-or-res]
      (if (channel? res#)
-       (async/<? res#)
+       (<? res#)
        res#)))
 
 (defmacro maybe-<??
   [ch-or-res]
   `(let [res# ~ch-or-res]
      (if (channel? res#)
-       (async/<?? res#)
+       (<?? res#)
        res#)))
 
 (defmacro safe
