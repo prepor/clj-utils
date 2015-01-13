@@ -13,10 +13,52 @@
     res))
 
 (defmacro <? [ch]
-  `(safe-res (async/<! ~ch)))
+  `(when-let [sexp-res# ~ch]
+     (safe-res (async/<! sexp-res#))))
 
 (defmacro <?? [ch]
-  `(safe-res (async/<!! ~ch)))
+  `(when-let [sexp-res# ~ch]
+     (safe-res (async/<!! sexp-res#))))
+
+(defmacro multi-<? [ch]
+  `(when-let [sexp-res# ~ch]
+     (doall (map safe-res (async/<! sexp-res#)))))
+
+(defmacro multi-<?? [ch]
+  `(when-let [sexp-res# ~ch]
+     (doall (map safe-res (async/<!! sexp-res#)))))
+
+(defn channel?
+  [v]
+  (instance? clojure.core.async.impl.channels.ManyToManyChannel v))
+
+(defmacro maybe-<!
+  [ch-or-res]
+  `(let [res# ~ch-or-res]
+     (if (channel? res#)
+       (async/<! res#)
+       res#)))
+
+(defmacro maybe-<!!
+  [ch-or-res]
+  `(let [res# ~ch-or-res]
+     (if (channel? res#)
+       (async/<!! res#)
+       res#)))
+
+(defmacro maybe-<?
+  [ch-or-res]
+  `(let [res# ~ch-or-res]
+     (if (channel? res#)
+       (async/<? res#)
+       res#)))
+
+(defmacro maybe-<??
+  [ch-or-res]
+  `(let [res# ~ch-or-res]
+     (if (channel? res#)
+       (async/<?? res#)
+       res#)))
 
 (defmacro safe
   [& body]
